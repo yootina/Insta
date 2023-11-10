@@ -2,7 +2,11 @@
 <div class="card my-4 col-12 col-md-6">
     
     <div class="card-header">
-        <img src="{{ post.user.profile_image.url }}" alt="" class="rounded-circle" width="30px">    
+        {% if post.user.profile_image %}
+            <img src="{{ post.user.profile_image.url }}" alt="" class="rounded-circle" width="30px">    
+        {% else %}
+            <img src="/media/profile/default.jpeg" alt="" class="rounded-circle" width="30px">    
+        {% endif %}
         <a href="{% url 'accounts:profile' username=post.user %}" class="text-reset text-decoration-none">
             {{ post.user }}
         </a>
