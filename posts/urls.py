@@ -7,4 +7,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('create/', views.create, name='create'),
     path('<int:id>/likes/', views.likes, name='likes'),
+    path('<int:post_id>/comments/create/', views.comment_create, name='comment_create'),
+    path('<int:id>/likes_async/', views.likes_async, name='likes_async'),
 ]
