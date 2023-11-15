@@ -1,54 +1,173 @@
 {% load bootstrap5 %}
-<div class="card my-4 col-12 col-md-6">
-    
-    <div class="card-header d-flex justify-content-between">
-        <div>
-            {% if post.user.profile_image %}
-            <img src="{{ post.user.profile_image.url }}" alt="" class="rounded-circle" width="30px">    
-            {% else %}
-            <img src="/media/profile/default.jpeg" alt="" class="rounded-circle" width="30px">    
-            {% endif %}
-            <a href="{% url 'accounts:profile' username=post.user %}" class="text-reset text-decoration-none">
-                {{ post.user }}
-            </a>
+
+<div class="row">
+
+    <div style="display: flex; justify-content: center; padding-top: 70px">
+
+        <div
+            style="background-color: rgb(255, 255, 255); margin-right: 100px; width: 700px; display:flex; flex-direction: column;">
+
+            <div class="card my-4 col col-lg-12">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        {% if post.user.profile_image %}
+                        <img src="{{ post.user.profile_image.url }}" alt="" class="rounded-circle" width="30px">
+                        {% else %}
+                        <img src="/media/profile/default.jpeg" alt="" class="rounded-circle" width="30px">
+                        {% endif %}
+                        <a href="{% url 'accounts:profile' username=post.user %}"
+                            class="text-reset text-decoration-none">
+                            {{ post.user }}
+                        </a>
+                    </div>
+                    <div>
+                        {{ post.created_at|timesince }}
+                    </div>
+                </div>
+
+                <img src="{{ post.image.url }}" alt="">
+                <div class="card-body">
+                    {% if user in post.like_users.all %}
+                    <i class="bi bi-suit-heart-fill heart" style="color:red"
+                        data-post-id="{{post.id}}">{{post.like_users.all|length }}</i>
+                    {% else %}
+                    <i class="bi bi-suit-heart heart" data-post-id="{{post.id}}">{{ post.like_users.all|length }}</i>
+                    {% endif %}
+                    명이 좋아합니다.
+                    <p class="card-text">{{ post.content }}</p>
+                </div>
+
+                {% for comment in post.comment_set.all %}
+                <div class="row">
+                    <div class="col-10">
+                        <div class="alert alert-light">
+                            {{ comment.user }} : {{ comment.content }}
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        {% if user == comment.user %}
+                        <a class="btn btn-danger btn-xs"
+                            style="background-color: white; color: red; border-color: white;"
+                            href="{% url 'posts:comment_delete' post_id=post.id id=comment.id %}">delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
+                <form action="{% url 'posts:comment_create' post_id=post.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-10">
+                            {% bootstrap_form form show_label=False %}
+                        </div>
+                        <div class="col-2">
+                            <input type="submit" class="btn btn-primary btn-xs"
+                                style="background-color: white; color: blue; border-color: white;">
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
         </div>
-        <div>
-            {{ post.created_at|timesince }}
+
+        <div style="background-color: rgb(255, 255, 255); width: 300px; height:500px; left: 72%; position: fixed">
+            <div class="right_feed">
+                <div class="feed_name" style="justify-content: space-between">
+                    <div style="display: flex; align-items: center; ">
+                        <div class="big_profile_box">
+                            <img class="profile_img"
+                                src="https://djf7qc4xvps5h.cloudfront.net/post/album/resize/LTU3NDQzMjY1MzUxNTUzNzk2NDM2MzU2.jpg">
+                        </div>
+                        <div class="name_content">
+                            <span class="feed_name_txt"> 짱짱걸 </span>
+                            <span class="name_content_txt"> Yoo Tina</span>
+                        </div>
+                    </div>
+
+                    <a class="link_txt">
+                        전환
+                    </a>
+                </div>
+            
+            <div class="recommend_box">
+                <span style="color: gray"> 회원님을 위한 추천</span>
+                <span style="font-size: 12px"> 모두 보기 </span>
+            </div>
+            <div>
+                <div class="feed_name" style="justify-content: space-between">
+                    <div class="profile_box">
+                        <img class="profile_img"
+                            src="https://r1.community.samsung.com/t5/image/serverpage/image-id/5439061i3C2B19887F615640/image-size/large?v=v2&px=999">
+                    </div>
+                    <div class="name_content">
+                        <span class="feed_name_txt"> Meow_1001 </span>
+                        <span class="name_content_txt"> Yoostagram 신규가입</span>
+                    </div>
+                    <a class="link_txt">
+                        팔로우
+                    </a>
+                </div>
+                <div class="feed_name" style="justify-content: space-between">
+                    <div class="profile_box">
+                        <img class="profile_img"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI0cf-w5PvKg67iCBylG4Ng_X9_naCbdwjiw&usqp=CAU">
+                    </div>
+                    <div class="name_content">
+                        <span class="feed_name_txt"> Meow_1002 </span>
+                        <span class="name_content_txt"> yootina 외 5명이 팔로우</span>
+                    </div>
+                    <a class="link_txt">
+                        팔로우
+                    </a>
+                </div>
+                <div class="feed_name" style="justify-content: space-between">
+                    <div class="profile_box">
+                        <img class="profile_img"
+                            src="https://media.bunjang.co.kr/product/236924354_2_1695186742_w360.jpg">
+                    </div>
+                    <div class="name_content">
+                        <span class="feed_name_txt"> Meow_1003 </span>
+                        <span class="name_content_txt"> yootina 외 5명이 팔로우</span>
+                    </div>
+                    <a class="link_txt">
+                        팔로우
+                    </a>
+                </div>
+                <div class="feed_name" style="justify-content: space-between">
+                    <div class="profile_box">
+                      <img class="profile_img"
+                           src="https://image.idus.com/image/files/c23466f47a0d430284fd612db906fca9.jpg">
+                    </div>
+                    <div class="name_content">
+                      <span class="feed_name_txt"> realinsta </span>
+                      <span class="name_content_txt"> mememe 외 5명이 팔로우 </span>
+                    </div>
+                    <a class="link_txt">
+                      팔로우
+                    </a>
+                </div>
+                    <div class="feed_name" style="justify-content: space-between">
+                        <div class="profile_box">
+                            <img class="profile_img"
+                                src="data:image/png;base64,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">
+                        </div>
+                        <div class="name_content">
+                            <span class="feed_name_txt"> Real_Meow_1005 </span>
+                            <span class="name_content_txt"> Yoostagram 신규가입 </span>
+                        </div>
+                        <a class="link_txt">
+                            팔로우
+                        </a>
+                    </div>
+                </div>
+                <div class="comment_box">
+                    <span> INSTAGRAM CLONECODING </span>
+                    </br>
+                    <span> 2023 YOOSTAGRAM </span>
+                </div>
+            </div>
         </div>
-    </div>
-    
-    <img src="{{ post.image.url }}" alt="">
-    <div class="card-body">
-        
-        {% if user in post.like_users.all %}
-        <i class="bi bi-suit-heart-fill heart" style="color:red" data-post-id="{{post.id}}">{{ post.like_users.all|length }}</i>
-        {% else %}
-        <i class="bi bi-suit-heart heart" data-post-id="{{post.id}}">{{ post.like_users.all|length }}</i>
-        {% endif %}
-        명이 좋아합니다. 
-        <p class="card-text">{{ post.content }}</p>
     </div>
 
-    {% for comment in post.comment_set.all %}
-    <div class="alert alert-light">
-        {{ comment.user }} : {{ comment.content }}
-        {% if user == comment.user %}
-        
-        {% endif %}
-    </div>
-    {% endfor %}
-
-    {% if user.is_authenticated %}
-    <form action="{% url 'posts:comment_create' post_id=post.id %}" method="POST">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-10">
-                {% bootstrap_form form show_label=False %}
-            </div>
-            <div class="col-2">
-                <input type="submit" class="btn btn-primary btn-xs" style="background-color: white; color: blue; border-color: white;">
-            </div>
-        </div>
-    </form>
-    {% endif %}
 </div>

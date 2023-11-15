@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Post
+from .models import Post, Comment
 from .forms import PostForm,CommentForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -32,6 +32,20 @@ def create(request):
         'form': form,
     }
     return render(request, 'form.html', context)
+
+
+@login_required
+def detail(request, id):
+    post = Post.objects.get(id=id)
+    form = CommentForm()
+
+    context = {
+        'post': post,
+        'form': form,
+    }
+    return render(request, 'detail.html', context)
+
+
 
 @login_required
 def likes(request, id):
@@ -71,6 +85,18 @@ def comment_create(request, post_id):
 
 
 
+@login_required
+def comment_delete(request, post_id, id):
+    comment = Comment.objects.get(id=id)
+
+    if request.user == comment.user:
+        comment.delete()
+
+    return redirect('posts:index')
+    
+
+
+
 def likes_async(request, id):
 
     user = request.user
@@ -89,3 +115,8 @@ def likes_async(request, id):
     }
 
     return JsonResponse(context)
+
+
+   
+
+
